@@ -90,7 +90,7 @@ commits.each do |c|
 end
 files_since_last_run = files_since_last_run.uniq.sort
 
-### delete files that are not on whitelist, delete files that are on blacklist
+### delete files that are not on whitelist, handle adding new files to repo gracefully (they are added to the whitelist)
 if File.exists? "#{home}/.whitelist"
   whitelist = File.readlines("#{home}/.whitelist").map{|l| l.strip}
   blacklist = File.exists?("#{home}/.blacklist") ? File.readlines("#{home}/.blacklist").map{|l| l.strip} : []
