@@ -144,8 +144,6 @@ authorfilter.each do |author,authoraliases|
 end
 authors = newauthors
 
-
-
 ### stats
 funique = {}
 files = {}
