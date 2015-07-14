@@ -75,7 +75,7 @@ lastrun = if File.exists? "#{home}/.statsrun"
 else
   commits.last.id
 end
-# File.write("#{home}/.statsrun",commits.last.id)
+File.write("#{home}/.statsrun",commits.last.id)
 files_since_last_run = nil
 commits.each do |c|
   if c.id == lastrun
@@ -121,6 +121,9 @@ commits.each do |c|
 end
 authorfilter = if File.exists? "#{home}/.statsauthors"
   sa = File.readlines("#{home}/.statsauthors").map{|l| (l =~ /^###/ || l =~ /^\s*$/) ? nil : l}.compact
+  if (newauthors = authors.keys - sa.map{|x| x.strip}).any?
+    File.open("#{home}/.statsauthors", 'a') { |f| f.write newauthors.join("\n") + "\n" }
+  end
   parent = nil
   sa.inject({}) do |i,a|
     if a =~ /^\s/
@@ -142,6 +145,8 @@ authorfilter.each do |author,authoraliases|
   authoraliases.each{ |authoralias| newauthors[author] += authors[authoralias] }
 end
 authors = newauthors
+
+
 
 ### stats
 funique = {}
