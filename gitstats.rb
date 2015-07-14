@@ -14,8 +14,6 @@
 # gitstats.rb (file COPYING in the main directory). If not, see
 # <http://www.gnu.org/licenses/>.
 
-require 'git'
-
 home = `git rev-parse --show-toplevel`.strip
 log = `git log --pretty=format:"####%aN####%ct####%H####%s" --reverse --summary --numstat --encoding=UTF-8 --no-renames`
 
