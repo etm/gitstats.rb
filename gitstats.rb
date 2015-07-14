@@ -75,7 +75,7 @@ lastrun = if File.exists? "#{home}/.statsrun"
 else
   commits.last.id
 end
-File.write("#{home}/.statsrun",commits.last.id)
+# File.write("#{home}/.statsrun",commits.last.id)
 files_since_last_run = nil
 commits.each do |c|
   if c.id == lastrun
@@ -95,16 +95,19 @@ if File.exists? "#{home}/.whitelist"
   whitelist = File.readlines("#{home}/.whitelist").map{|l| l.strip}
   blacklist = File.exists?("#{home}/.blacklist") ? File.readlines("#{home}/.blacklist").map{|l| l.strip} : []
   newfiles = files_since_last_run - blacklist
-  whitelist += newfiles
-  whitelist = whitelist.uniq.sort
+  checklist = (whitelist + newfiles).uniq.sort
   commits.each do |c|
     c.files.delete_if do |k,v|
-      !(whitelist.include?(k))
+      !(checklist.include?(k))
     end
   end
-  if (blacklist = files - whitelist).any?
+  if (blacklist = files - checklist).any?
     text = [ "### the .blacklist is purely for documentation purposes", "### add lines from here to the .whitelist to make a difference", "" ]
     File.write("#{home}/.blacklist",(text + blacklist.sort).join("\n") + "\n")
+  end
+  if (checklist - whitelist).any?
+    File.write("#{home}/.whitelist",checklist.join("\n") + "\n")
+    File.write("#{home}/.whitelist.old",whitelist.join("\n") + "\n")
   end
 else
   File.write("#{home}/.whitelist",files.join("\n") + "\n")
